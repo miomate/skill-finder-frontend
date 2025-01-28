@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { SessionContext } from '../contexts/SessionContext'
 
-const AllSkillPage = () => {
+const AllSkillsPage = () => {
   const { token } = useContext(SessionContext)
 
   const [skills, setSkill] = useState([])
