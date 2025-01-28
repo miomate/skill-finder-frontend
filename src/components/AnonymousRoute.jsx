@@ -1,15 +1,19 @@
-import { useContext } from "react";
-import { SessionContext } from "../context/SessionContext";
-import { Route, Navigate } from "react-router-dom";
+import { useContext } from 'react'
+import { SessionContext } from '../contexts/SessionContext'
+import { Navigate } from 'react-router-dom'
 
-const AnonymousRoute = ({children}) => {
-    const { isAuthenticated } = useContext(SessionContext);
+const AnonymousRoute = ({ children }) => {
+  const { isAuthenticated, isLoading } = useContext(SessionContext)
 
-    if (isAuthenticated) {
-        return <Navigate to="/profile" />;
-    }
+  if (isLoading) {
+    return <h2>Loading...</h2>
+  }
 
-    return children;
+  if (isAuthenticated) {
+    return <Navigate to='/profile' />
+  }
+
+  return children
 }
- 
-export default AnonymousRoute;
+
+export default AnonymousRoute

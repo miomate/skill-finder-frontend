@@ -1,18 +1,21 @@
-import { Route, Routes } from "react-router-dom";
-import SignupPage from "./pages/SignUp";
-import Navbar from "./components/Navbar";
-import LoginPage from "./pages/LoginPage";
-import ProfilePage from "./pages/ProfilePage";
-import AnonymousRoute from "./components/AnonymousRoute";
-import PrivateRoute from "./components/PrivateRoute";
+import { Route, Routes } from 'react-router-dom'
+import SignupPage from './pages/SignupPage'
+import Navbar from './components/Navbar'
+import LoginPage from './pages/LoginPage'
+import ProfilePage from './pages/ProfilePage'
+import PrivateRoute from './components/PrivateRoute'
+import AnonymousRoute from './components/AnonymousRoute'
+import AllSkillsPage from './pages/AllSkillsPage'
+import NewSkillPage from './pages/NewSkillPage'
+
 function App() {
   return (
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<h1>Home Page</h1>} />
+        <Route path='/' element={<h1>Home page</h1>} />
         <Route
-          path="/signup"
+          path='/signup'
           element={
             <AnonymousRoute>
               <SignupPage />
@@ -20,7 +23,7 @@ function App() {
           }
         />
         <Route
-          path="/login"
+          path='/login'
           element={
             <AnonymousRoute>
               <LoginPage />
@@ -28,17 +31,28 @@ function App() {
           }
         />
         <Route
-          path="/profile"
+          path='/profile'
           element={
             <PrivateRoute>
-              <ProfilePage></ProfilePage>
+              <ProfilePage />
             </PrivateRoute>
           }
         />
-        <Route path="*" element={<h1>404</h1>} />
+        <Route
+          path='/skills/new'
+          element={
+            <PrivateRoute>
+              <NewSkillPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route path='/skills' element={<AllSkillsPage />} />
+
+        <Route path='*' element={<h1>404 Page</h1>} />
       </Routes>
     </>
-  );
+  )
 }
 
-export default App;
+export default App
