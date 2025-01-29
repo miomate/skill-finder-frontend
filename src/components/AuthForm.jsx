@@ -24,7 +24,7 @@ const AuthForm = ({ submitCallback }) => {
           onChange={event => setPassword(event.target.value)}
         />
       </label>
-      <button type='submit'>SignUp</button>
+      <button type='submit'>SignUp/Login</button>
     </form>
   )
 }

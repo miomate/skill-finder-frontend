@@ -9,6 +9,7 @@ const NewSkillPage = () => {
 
   const [skillName, setSkillName] = useState("");
   const [user, setUser] = useState("");
+  const [city, setCity] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -50,6 +51,14 @@ const NewSkillPage = () => {
             required
             value={user}
             onChange={(event) => setUser(event.target.value)}
+          />
+        </label>
+        <label>
+          City
+          <input
+            required
+            value={city}
+            onChange={(event) => setCity(event.target.value)}
           />
         </label>
 
