@@ -22,7 +22,7 @@ const NewSkillPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ skillName, user }),
+          body: JSON.stringify({ skillName, user, city }),
         }
       );
       if (response.status === 201) {
