@@ -4,83 +4,91 @@ import { useNavigate } from "react-router-dom";
 
 const NewSkillPage = () => {
   const navigate = useNavigate();
-
   const { token } = useContext(SessionContext);
 
   const [skillName, setSkillName] = useState("");
-  const [user, setUser] = useState("");
+  const [username, setUsername] = useState(""); // Changed from "user" to "username"
   const [city, setCity] = useState("");
+  const [error, setError] = useState(null); // Added state for error messages
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setError(null); // Clear previous errors
+
     try {
-      // Fetch the user object by username
-      const userResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/users?username=${user}`);
+      const [userResponse, cityResponse] = await Promise.all([
+        fetch(`${import.meta.env.VITE_API_URL}/api/users?username=${username}`),
+        fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`)
+      ]);
+
+      if (!userResponse.ok) throw new Error("User not found");
+      if (!cityResponse.ok) throw new Error("City not found");
+
       const userData = await userResponse.json();
-      if (!userData) throw new Error("User not found");
-  
-      // Fetch the city object by city name
-      const cityResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`);
       const cityData = await cityResponse.json();
-      if (!cityData) throw new Error("City not found");
-  
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/skills`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            skill: skillName,
-            user: userData._id, // Send ObjectId
-            city: cityData._id, // Send ObjectId
-          }),
-        }
-      );
+
+      if (!userData?._id || !cityData?._id) {
+        setError("Invalid user or city.");
+        return;
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/skills`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          skill: skillName,
+          user: userData._id,
+          city: cityData._id,
+        }),
+      });
+
       if (response.status === 201) {
         navigate("/skills");
       } else {
         const errorData = await response.json();
-        console.error("Error:", errorData);
+        setError(errorData.message || "Failed to add skill.");
       }
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
   };
-  
 
   return (
     <>
-      <h1>New skill</h1>
+      <h1>New Skill</h1>
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <label>
-          Skill name
+          Skill Name
           <input
+            type="text"
             required
             value={skillName}
             onChange={(event) => setSkillName(event.target.value)}
           />
         </label>
         <label>
-          User
+          Username
           <input
+            type="text"
             required
-            value={user}
-            onChange={(event) => setUser(event.target.value)}
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
           />
         </label>
         <label>
           City
           <input
+            type="text"
             required
             value={city}
             onChange={(event) => setCity(event.target.value)}
           />
         </label>
-
-        <button type="submit">Add skill</button>
+        <button type="submit">Add Skill</button>
       </form>
     </>
   );
