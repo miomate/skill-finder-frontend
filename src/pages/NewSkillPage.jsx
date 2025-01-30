@@ -7,16 +7,16 @@ const NewSkillPage = () => {
   const { token } = useContext(SessionContext);
 
   const [skillName, setSkillName] = useState("");
-  const [username, setUsername] = useState(""); // Changed from "user" to "username"
-  const [city, setCity] = useState(""); // City input field
-  const [error, setError] = useState(null); // Added state for error messages
+  const [username, setUsername] = useState("");
+  const [city, setCity] = useState("");
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError(null);
 
     try {
-      // Check if the user exists (no changes here)
+      // Check if the user exists
       const [userResponse] = await Promise.all([
         fetch(`${import.meta.env.VITE_API_URL}/api/users?username=${username}`),
       ]);
@@ -25,9 +25,7 @@ const NewSkillPage = () => {
 
       const userData = await userResponse.json();
 
-      // Send city data from the user input to the backend
-      console.log("Request body to create city:", { name: city }); // Log the request body
-
+      // Create the city if it doesn't exist
       const cityCreateResponse = await fetch(
         `${import.meta.env.VITE_API_URL}/api/cities`,
         {
@@ -36,9 +34,7 @@ const NewSkillPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            name: city, // Use the city entered by the user
-          }),
+          body: JSON.stringify({ name: city }),
         }
       );
 
@@ -46,13 +42,7 @@ const NewSkillPage = () => {
 
       const cityData = await cityCreateResponse.json();
 
-      // Continue only if user and city are valid
-      if (!userData?._id || !cityData?._id) {
-        setError("Invalid user or city.");
-        return;
-      }
-
-      // Create the skill and link to user and city
+      // Create the skill and link it to the user and city
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/skills`,
         {
