@@ -18,7 +18,7 @@ const NewSkillPage = () => {
     try {
       const [userResponse, cityResponse] = await Promise.all([
         fetch(`${import.meta.env.VITE_API_URL}/api/users?username=${username}`),
-        fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`)
+        fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`),
       ]);
 
       if (!userResponse.ok) throw new Error("User not found");
@@ -26,23 +26,22 @@ const NewSkillPage = () => {
       let cityData;
       if (cityResponse.ok) {
         cityData = await cityResponse.json();
-        console.log("City found:", cityData); // Log city data if found
       } else {
-        console.log("City not found, creating new city...");
         // City not found, so create it
-        const cityCreateResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/cities`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Optional if needed for authentication
-          },
-          body: JSON.stringify({ name: city }),
-        });
+        const cityCreateResponse = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/cities`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`, // Optional if needed for authentication
+            },
+            body: JSON.stringify({ name: city }),
+          }
+        );
 
-        console.log("City create response status:", cityCreateResponse.status); // Log the response status
         if (!cityCreateResponse.ok) throw new Error("Failed to create city");
         cityData = await cityCreateResponse.json();
-        console.log("New city created:", cityData); // Log the newly created city
       }
 
       const userData = await userResponse.json();
@@ -52,18 +51,21 @@ const NewSkillPage = () => {
         return;
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/skills`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          skill: skillName,
-          user: userData._id,
-          city: cityData._id,
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/skills`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            skill: skillName,
+            user: userData._id,
+            city: cityData._id,
+          }),
+        }
+      );
 
       if (response.status === 201) {
         navigate("/skills");
@@ -72,7 +74,6 @@ const NewSkillPage = () => {
         setError(errorData.message || "Failed to add skill.");
       }
     } catch (error) {
-      console.error("Error in adding skill:", error); // Log error
       setError(error.message);
     }
   };
