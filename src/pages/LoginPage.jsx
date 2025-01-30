@@ -13,14 +13,21 @@ const LoginPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(credentials),
+        credentials: 'include', // Include credentials (cookies) with the request
       })
+
       if (response.status === 200) {
         const data = await response.json()
         console.log(data)
         setToken(data.token)
+      } else {
+        const errorData = await response.json()
+        console.log('Error:', errorData.message || 'Login failed')
+        // You can add error handling here for the user to see
       }
     } catch (error) {
       console.log(error)
+      // Display error message to the user here
     }
   }
 

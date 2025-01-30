@@ -9,12 +9,20 @@ const SignupPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(credentials),
+        credentials: 'include', // Include credentials (cookies) with the request
       })
+
       if (response.status === 201) {
         console.log('User created')
+        // Optionally, you can redirect the user to the login page or dashboard here
+      } else {
+        const errorData = await response.json()
+        console.log('Error:', errorData.message || 'Signup failed')
+        // You can add error handling here for the user to see
       }
     } catch (error) {
       console.log(error)
+      // Display error message to the user here
     }
   }
 
