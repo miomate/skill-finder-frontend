@@ -13,68 +13,49 @@ const NewSkillPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError(null); // Clear previous errors
-
+    setError(null);
+  
     try {
-      const [userResponse, cityResponse] = await Promise.all([
-        fetch(
-          `${import.meta.env.VITE_API_URL}/api/users?username=${username}`,
-          {
-            credentials: "include", // Ensure credentials are sent
-          }
-        ),
-        fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`, {
-          credentials: "include", // Ensure credentials are sent
-        }),
+      const [userResponse] = await Promise.all([
+        fetch(`${import.meta.env.VITE_API_URL}/api/users?username=${username}`),
       ]);
-
+  
       if (!userResponse.ok) throw new Error("User not found");
-
-      let cityData;
-      if (cityResponse.ok) {
-        cityData = await cityResponse.json();
-      } else {
-        const cityCreateResponse = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/cities`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            credentials: "include", // Ensure credentials are sent
-            body: JSON.stringify({ name: city }),
-          }
-        );
-
-        if (!cityCreateResponse.ok) throw new Error("Failed to create city");
-        cityData = await cityCreateResponse.json();
-      }
-
+  
       const userData = await userResponse.json();
-
+  
+      // Hardcode city creation here
+      const cityCreateResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/cities`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name: "Berlin" }), // Hardcoded city name
+      });
+  
+      if (!cityCreateResponse.ok) throw new Error("Failed to create city");
+  
+      const cityData = await cityCreateResponse.json();
+      
       if (!userData?._id || !cityData?._id) {
         setError("Invalid user or city.");
         return;
       }
-
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/skills`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          credentials: "include", // Ensure credentials are sent
-          body: JSON.stringify({
-            skill: skillName,
-            user: userData._id,
-            city: cityData._id,
-          }),
-        }
-      );
-
+  
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/skills`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          skill: skillName,
+          user: userData._id,
+          city: cityData._id,
+        }),
+      });
+  
       if (response.ok) {
         navigate("/skills");
       } else {
@@ -85,6 +66,7 @@ const NewSkillPage = () => {
       setError(error.message);
     }
   };
+  
 
   return (
     <>
