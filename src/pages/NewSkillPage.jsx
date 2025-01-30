@@ -16,11 +16,13 @@ const NewSkillPage = () => {
     setError(null); // Clear previous errors
 
     try {
+      // Send both requests in parallel
       const [userResponse, cityResponse] = await Promise.all([
         fetch(`${import.meta.env.VITE_API_URL}/api/users?username=${username}`),
-        fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`)
+        fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`) // Ensure this matches the backend route
       ]);
 
+      // Check if the user exists
       if (!userResponse.ok) throw new Error("User not found");
 
       let cityData;
