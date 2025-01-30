@@ -14,6 +14,16 @@ const NewSkillPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      // Fetch the user object by username
+      const userResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/users?username=${user}`);
+      const userData = await userResponse.json();
+      if (!userData) throw new Error("User not found");
+  
+      // Fetch the city object by city name
+      const cityResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`);
+      const cityData = await cityResponse.json();
+      if (!cityData) throw new Error("City not found");
+  
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/skills`,
         {
@@ -23,19 +33,23 @@ const NewSkillPage = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            skill: skillName, 
-            user, 
-            city, 
+            skill: skillName,
+            user: userData._id, // Send ObjectId
+            city: cityData._id, // Send ObjectId
           }),
         }
       );
       if (response.status === 201) {
         navigate("/skills");
+      } else {
+        const errorData = await response.json();
+        console.error("Error:", errorData);
       }
     } catch (error) {
       console.log(error);
     }
   };
+  
 
   return (
     <>
