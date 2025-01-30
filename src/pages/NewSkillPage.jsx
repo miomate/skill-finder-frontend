@@ -17,8 +17,15 @@ const NewSkillPage = () => {
 
     try {
       const [userResponse, cityResponse] = await Promise.all([
-        fetch(`${import.meta.env.VITE_API_URL}/api/users?username=${username}`),
-        fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`),
+        fetch(
+          `${import.meta.env.VITE_API_URL}/api/users?username=${username}`,
+          {
+            credentials: "include", // Ensure credentials are sent
+          }
+        ),
+        fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`, {
+          credentials: "include", // Ensure credentials are sent
+        }),
       ]);
 
       if (!userResponse.ok) throw new Error("User not found");
@@ -35,6 +42,7 @@ const NewSkillPage = () => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
+            credentials: "include", // Ensure credentials are sent
             body: JSON.stringify({ name: city }),
           }
         );
@@ -58,6 +66,7 @@ const NewSkillPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
+          credentials: "include", // Ensure credentials are sent
           body: JSON.stringify({
             skill: skillName,
             user: userData._id,
