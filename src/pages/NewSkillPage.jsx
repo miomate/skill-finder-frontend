@@ -16,13 +16,11 @@ const NewSkillPage = () => {
     setError(null); // Clear previous errors
 
     try {
-      // Send both requests in parallel
       const [userResponse, cityResponse] = await Promise.all([
         fetch(`${import.meta.env.VITE_API_URL}/api/users?username=${username}`),
-        fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`), // Ensure this matches the backend route
+        fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`)
       ]);
 
-      // Check if the user exists
       if (!userResponse.ok) throw new Error("User not found");
 
       let cityData;
@@ -32,17 +30,14 @@ const NewSkillPage = () => {
       } else {
         console.log("City not found, creating new city...");
         // City not found, so create it
-        const cityCreateResponse = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/cities`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`, // Optional if needed for authentication
-            },
-            body: JSON.stringify({ name: city }),
-          }
-        );
+        const cityCreateResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/cities`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Optional if needed for authentication
+          },
+          body: JSON.stringify({ name: city }),
+        });
 
         console.log("City create response status:", cityCreateResponse.status); // Log the response status
         if (!cityCreateResponse.ok) throw new Error("Failed to create city");
@@ -57,21 +52,18 @@ const NewSkillPage = () => {
         return;
       }
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/skills`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            skill: skillName,
-            user: userData._id,
-            city: cityData._id,
-          }),
-        }
-      );
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/skills`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          skill: skillName,
+          user: userData._id,
+          city: cityData._id,
+        }),
+      });
 
       if (response.status === 201) {
         navigate("/skills");
@@ -100,27 +92,27 @@ const NewSkillPage = () => {
           />
         </label>
         <label>
-          Username
-          <input
-            type="text"
-            required
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-        </label>
-        <label>
-          City
-          <input
-            type="text"
-            required
-            value={city}
-            onChange={(event) => setCity(event.target.value)}
-          />
-        </label>
-        <button type="submit">Add Skill</button>
-      </form>
-    </>
-  );
+  Username
+  <input
+    type="text"
+    required
+    value={username}
+    onChange={(event) => setUsername(event.target.value)}
+  />
+</label>
+<label>
+  City
+  <input
+    type="text"
+    required
+    value={city}
+    onChange={(event) => setCity(event.target.value)}
+  />
+</label>
+<button type="submit">Add Skill</button>
+</form>
+</>
+);
 };
 
 export default NewSkillPage;
