@@ -22,10 +22,26 @@ const NewSkillPage = () => {
       ]);
 
       if (!userResponse.ok) throw new Error("User not found");
-      if (!cityResponse.ok) throw new Error("City not found");
+      
+      let cityData;
+      if (cityResponse.ok) {
+        cityData = await cityResponse.json();
+      } else {
+        // City not found, so create it
+        const cityCreateResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/cities`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Optional if needed for authentication
+          },
+          body: JSON.stringify({ name: city }),
+        });
+
+        if (!cityCreateResponse.ok) throw new Error("Failed to create city");
+        cityData = await cityCreateResponse.json();
+      }
 
       const userData = await userResponse.json();
-      const cityData = await cityResponse.json();
 
       if (!userData?._id || !cityData?._id) {
         setError("Invalid user or city.");
