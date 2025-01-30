@@ -16,6 +16,7 @@ const NewSkillPage = () => {
     setError(null);
 
     try {
+      // Check if the user exists (no changes here)
       const [userResponse] = await Promise.all([
         fetch(`${import.meta.env.VITE_API_URL}/api/users?username=${username}`),
       ]);
@@ -24,7 +25,7 @@ const NewSkillPage = () => {
 
       const userData = await userResponse.json();
 
-      // Dynamically create city based on input
+      // Send city data from the user input to the backend
       const cityCreateResponse = await fetch(
         `${import.meta.env.VITE_API_URL}/api/cities`,
         {
@@ -33,7 +34,9 @@ const NewSkillPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ name: city }), // Use the dynamic city name
+          body: JSON.stringify({
+            name: city, // Use the city entered by the user
+          }),
         }
       );
 
@@ -41,11 +44,13 @@ const NewSkillPage = () => {
 
       const cityData = await cityCreateResponse.json();
 
+      // Continue only if user and city are valid
       if (!userData?._id || !cityData?._id) {
         setError("Invalid user or city.");
         return;
       }
 
+      // Create the skill and link to user and city
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/skills`,
         {
