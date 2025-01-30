@@ -16,38 +16,31 @@ const NewSkillPage = () => {
     setError(null); // Clear previous errors
 
     try {
-      // Send both requests in parallel
       const [userResponse, cityResponse] = await Promise.all([
         fetch(`${import.meta.env.VITE_API_URL}/api/users?username=${username}`),
-        fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`), // Ensure this matches the backend route
+        fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`),
       ]);
 
-      // Check if the user exists
       if (!userResponse.ok) throw new Error("User not found");
 
       let cityData;
       if (cityResponse.ok) {
         cityData = await cityResponse.json();
-        console.log("City found:", cityData); // Log city data if found
       } else {
-        console.log("City not found, creating new city...");
-        // City not found, so create it
         const cityCreateResponse = await fetch(
           `${import.meta.env.VITE_API_URL}/api/cities`,
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`, // Optional if needed for authentication
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ name: city }),
           }
         );
 
-        console.log("City create response status:", cityCreateResponse.status); // Log the response status
         if (!cityCreateResponse.ok) throw new Error("Failed to create city");
         cityData = await cityCreateResponse.json();
-        console.log("New city created:", cityData); // Log the newly created city
       }
 
       const userData = await userResponse.json();
@@ -73,14 +66,13 @@ const NewSkillPage = () => {
         }
       );
 
-      if (response.status === 201) {
+      if (response.ok) {
         navigate("/skills");
       } else {
         const errorData = await response.json();
         setError(errorData.message || "Failed to add skill.");
       }
     } catch (error) {
-      console.error("Error in adding skill:", error); // Log error
       setError(error.message);
     }
   };
