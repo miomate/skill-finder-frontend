@@ -16,17 +16,21 @@ const NewSkillPage = () => {
     setError(null); // Clear previous errors
 
     try {
+      // Send both requests in parallel
       const [userResponse, cityResponse] = await Promise.all([
         fetch(`${import.meta.env.VITE_API_URL}/api/users?username=${username}`),
-        fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`),
+        fetch(`${import.meta.env.VITE_API_URL}/api/cities?city=${city}`), // Ensure this matches the backend route
       ]);
 
+      // Check if the user exists
       if (!userResponse.ok) throw new Error("User not found");
 
       let cityData;
       if (cityResponse.ok) {
         cityData = await cityResponse.json();
+        console.log("City found:", cityData); // Log city data if found
       } else {
+        console.log("City not found, creating new city...");
         // City not found, so create it
         const cityCreateResponse = await fetch(
           `${import.meta.env.VITE_API_URL}/api/cities`,
@@ -40,8 +44,10 @@ const NewSkillPage = () => {
           }
         );
 
+        console.log("City create response status:", cityCreateResponse.status); // Log the response status
         if (!cityCreateResponse.ok) throw new Error("Failed to create city");
         cityData = await cityCreateResponse.json();
+        console.log("New city created:", cityData); // Log the newly created city
       }
 
       const userData = await userResponse.json();
@@ -74,6 +80,7 @@ const NewSkillPage = () => {
         setError(errorData.message || "Failed to add skill.");
       }
     } catch (error) {
+      console.error("Error in adding skill:", error); // Log error
       setError(error.message);
     }
   };
