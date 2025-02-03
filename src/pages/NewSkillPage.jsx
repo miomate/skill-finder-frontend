@@ -19,6 +19,21 @@ const NewSkillPage = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (user) {
+      console.log("Fetching skills for user ID:", user._id);
+      fetch(`${import.meta.env.VITE_API_URL}/skills/user/${user._id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("User skills not found.");
+          return res.json();
+        })
+        .then((data) => setSkills(data))
+        .catch((error) => console.error("Error fetching user skills:", error));
+    }
+  }, [user]);
+
   // Handle new skill submission
   const handleSubmit = async (e) => {
     e.preventDefault();
