@@ -1,37 +1,81 @@
-import AuthForm from '../components/AuthForm'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
-  const handleSignup = async credentials => {
+  const navigate = useNavigate();
+  
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleSignup = async (event) => {
+    event.preventDefault();
+    setError(null);
+    setSuccessMessage("");
+
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(credentials),
-        credentials: 'include', // Include credentials (cookies) with the request
-      })
+        body: JSON.stringify({ username, password })
+      });
 
       if (response.status === 201) {
-        console.log('User created')
-        // Optionally, you can redirect the user to the login page or dashboard here
+        // Successful signup
+        setSuccessMessage("Account created successfully! Redirecting to login...");
+        setUsername("");
+        setPassword("");
+        // Redirect to the login page after 3 seconds
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
       } else {
-        const errorData = await response.json()
-        console.log('Error:', errorData.message || 'Signup failed')
-        // You can add error handling here for the user to see
+        // Parse and display error message from backend
+        const errorData = await response.json();
+        setError(errorData.message || "Signup failed.");
       }
-    } catch (error) {
-      console.log(error)
-      // Display error message to the user here
+    } catch (err) {
+      setError("Signup failed. " + err.message);
     }
-  }
+  };
 
   return (
-    <>
+    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "1rem" }}>
       <h1>Sign Up</h1>
-      <AuthForm submitCallback={handleSignup} />
-    </>
-  )
-}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+      <form onSubmit={handleSignup}>
+        <div style={{ marginBottom: "1rem" }}>
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            style={{ width: "100%", padding: "0.5rem", marginTop: "0.5rem" }}
+          />
+        </div>
+        <div style={{ marginBottom: "1rem" }}>
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{ width: "100%", padding: "0.5rem", marginTop: "0.5rem" }}
+          />
+        </div>
+        <button type="submit" style={{ padding: "0.75rem", width: "100%" }}>
+          Create Account
+        </button>
+      </form>
+    </div>
+  );
+};
 
-export default SignupPage
+export default SignupPage;
