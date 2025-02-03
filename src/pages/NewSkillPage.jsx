@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const NewSkillPage = () => {
   const navigate = useNavigate();
-  const { token, user } = useContext(SessionContext); // Assume SessionContext provides 'user' with a 'username' property
+  const { token, user } = useContext(SessionContext); // user should contain { username, _id, ... }
 
   const [skillName, setSkillName] = useState("");
   const [city, setCity] = useState("");
@@ -15,7 +15,7 @@ const NewSkillPage = () => {
     setError("");
 
     try {
-      // Since the user is logged in, we can fetch user details by the logged-in username.
+      // Fetch user details using the logged-in username
       const [userResponse] = await Promise.all([
         fetch(
           `${import.meta.env.VITE_API_URL}/api/users?username=${user.username}`
@@ -26,7 +26,7 @@ const NewSkillPage = () => {
 
       const userData = await userResponse.json();
 
-      // Create the city if it doesn't exist (the backend returns the existing city if already present)
+      // Create the city if it doesn't exist (backend returns existing city if already present)
       const cityCreateResponse = await fetch(
         `${import.meta.env.VITE_API_URL}/api/cities`,
         {
