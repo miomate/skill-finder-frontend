@@ -19,7 +19,9 @@ const SignupPage = () => {
         `${import.meta.env.VITE_API_URL}/auth/signup`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({ username, password }),
         }
       );
@@ -35,15 +37,7 @@ const SignupPage = () => {
         }, 3000);
       } else {
         const errorData = await response.json();
-        // If the error message indicates a duplicate key, change the feedback
-        if (
-          errorData.message &&
-          errorData.message.toLowerCase().includes("duplicate")
-        ) {
-          setError("Username already taken. Choose another one.");
-        } else {
-          setError(errorData.message || "Signup failed.");
-        }
+        setError(errorData.message || "Signup failed.");
       }
     } catch (err) {
       setError("Signup failed. " + err.message);

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const NewSkillPage = () => {
   const navigate = useNavigate();
-  const { token, user } = useContext(SessionContext); // user should contain { username, _id, ... }
+  const { token, user } = useContext(SessionContext); // SessionContext should provide the logged-in user's data
 
   const [skillName, setSkillName] = useState("");
   const [city, setCity] = useState("");
@@ -15,7 +15,7 @@ const NewSkillPage = () => {
     setError("");
 
     try {
-      // Fetch user details using the logged-in username
+      // Fetch user details using the logged-in user's username
       const [userResponse] = await Promise.all([
         fetch(
           `${import.meta.env.VITE_API_URL}/api/users?username=${user.username}`
@@ -26,7 +26,7 @@ const NewSkillPage = () => {
 
       const userData = await userResponse.json();
 
-      // Create the city if it doesn't exist (backend returns existing city if already present)
+      // Create the city if it doesn't exist (the backend returns the existing city if already present)
       const cityCreateResponse = await fetch(
         `${import.meta.env.VITE_API_URL}/api/cities`,
         {
@@ -66,8 +66,8 @@ const NewSkillPage = () => {
         const errorData = await response.json();
         setError(errorData.message || "Failed to add skill.");
       }
-    } catch (error) {
-      setError(error.message);
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -87,7 +87,7 @@ const NewSkillPage = () => {
         </div>
         <div>
           <label>Username:</label>
-          {/* Prefill with logged-in user's username; make read-only */}
+          {/* Pre-filled with logged-in user's username; read-only */}
           <input type="text" value={user.username} readOnly />
         </div>
         <div>

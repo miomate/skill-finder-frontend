@@ -27,7 +27,7 @@ const LoginPage = () => {
       if (response.status === 200) {
         const data = await response.json();
         setToken(data.token);
-        navigate("/"); // or wherever you want to redirect on successful login
+        navigate("/"); // Redirect after successful login
       } else {
         const errorData = await response.json();
         setError(errorData.message || "Invalid username or password.");
