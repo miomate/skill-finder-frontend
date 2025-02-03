@@ -10,19 +10,8 @@ const NewSkillPage = () => {
   // Fetch user's skills
   useEffect(() => {
     if (user) {
-      fetch(`${import.meta.env.VITE_API_URL}/skills/user/${user._id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((res) => res.json())
-        .then((data) => setSkills(data))
-        .catch((error) => console.error("Error fetching user skills:", error));
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (user) {
       console.log("Fetching skills for user ID:", user._id);
-      fetch(`${import.meta.env.VITE_API_URL}/skills/user/${user._id}`, {
+      fetch(`${import.meta.env.VITE_API_URL}/api/skills/user/${user._id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => {
@@ -32,20 +21,23 @@ const NewSkillPage = () => {
         .then((data) => setSkills(data))
         .catch((error) => console.error("Error fetching user skills:", error));
     }
-  }, [user]);
+  }, [user, token]);
 
   // Handle new skill submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/skills`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ skillName, city }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/skills`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ skill: skillName, user: user._id, city }),
+        }
+      );
 
       if (response.ok) {
         const newSkill = await response.json();
@@ -99,8 +91,8 @@ const NewSkillPage = () => {
             <tbody>
               {skills.map((skill) => (
                 <tr key={skill._id}>
-                  <td>{skill.skillName}</td>
-                  <td>{skill.city}</td>
+                  <td>{skill.skill}</td>
+                  <td>{skill.city.name}</td>
                 </tr>
               ))}
             </tbody>
