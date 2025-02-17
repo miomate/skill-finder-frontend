@@ -6,6 +6,7 @@ const NewSkillPage = () => {
   const [skills, setSkills] = useState([]);
   const [skillName, setSkillName] = useState("");
   const [city, setCity] = useState("");
+  const [error, setError] = useState(""); // State to store error message
 
   // Fetch user's skills
   useEffect(() => {
@@ -26,6 +27,17 @@ const NewSkillPage = () => {
   // Handle new skill submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if skill already exists in the selected city
+    const skillExists = skills.some(
+      (skill) => skill.skill === skillName && skill.city.name === city
+    );
+
+    if (skillExists) {
+      setError("This skill already exists in this city.");
+      return;
+    }
+
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/skills`,
@@ -44,11 +56,14 @@ const NewSkillPage = () => {
         setSkills([...skills, newSkill]); // Update table with new skill
         setSkillName("");
         setCity("");
+        setError(""); // Clear error message
       } else {
         console.error("Failed to add skill.");
+        setError("Failed to add skill."); // Set error message if the request fails
       }
     } catch (error) {
       console.error("Error:", error);
+      setError("Error occurred while adding the skill.");
     }
   };
 
@@ -95,7 +110,8 @@ const NewSkillPage = () => {
       ) : (
         <p>You must be logged in to add a skill.</p>
       )}
-
+      {error && <p style={{ color: "red" }}>{error}</p>}{" "}
+      {/* Display error message */}
       {/* Table displaying user's skills */}
       {skills.length > 0 && (
         <div>

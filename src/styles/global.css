@@ -51,3 +51,32 @@ h3 {
 div {
   margin: 20px;
 }
+
+.navbar {
+  background-color: #333;
+  padding: 10px;
+  text-align: center;
+}
+
+.navbar-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-item {
+  display: inline-block;
+  margin: 0 15px;
+}
+
+.navbar-link {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+.navbar-link:hover {
+  background-color: #575757;
+}
