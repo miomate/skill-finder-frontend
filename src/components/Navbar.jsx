@@ -1,61 +1,49 @@
-import { Route, Routes } from "react-router-dom";
-import SignupPage from "./pages/SignupPage";
-import Navbar from "./components/Navbar";
-import LoginPage from "./pages/LoginPage";
-import ProfilePage from "./pages/ProfilePage";
-import PrivateRoute from "./components/PrivateRoute";
-import AnonymousRoute from "./components/AnonymousRoute";
-import AllSkillsPage from "./pages/AllSkillsPage";
-import NewSkillPage from "./pages/NewSkillPage";
+import { useContext } from "react";
+import { Link } from "react-router-dom";
+import { SessionContext } from "../contexts/SessionContext";
 
-function App() {
+const Navbar = () => {
+  const { isAuthenticated, logout } = useContext(SessionContext);
+
   return (
-    <>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<h1>Home page</h1>} />
-        <Route
-          path="/signup"
-          element={
-            <AnonymousRoute>
-              <SignupPage />
-            </AnonymousRoute>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <AnonymousRoute>
-              <LoginPage />
-            </AnonymousRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <ProfilePage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/skills/new"
-          element={
-            <PrivateRoute>
-              <NewSkillPage />
-            </PrivateRoute>
-          }
-        />
-
-        <Route path="/skills" element={<AllSkillsPage />} />
-
-        <Route path="*" element={<h1>404 Page</h1>} />
-      </Routes>
-    </>
+    <nav>
+      <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/skills">All skills</Link>
+        </li>
+        {isAuthenticated ? (
+          <>
+            <li>
+              <Link to="/skills/new">Add a Skill</Link>
+            </li>
+            <li>
+              <Link to="/profile">Profile</Link>
+            </li>
+            <li>
+              <button type="button" onClick={logout}>
+                Logout
+              </button>
+            </li>
+          </>
+        ) : (
+          <>
+            <li>
+              <Link to="/signup">Signup</Link>
+            </li>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+          </>
+        )}
+      </ul>
+    </nav>
   );
-}
+};
 
-export default App;
+export default Navbar;
 
 // import { Link } from "react-router-dom";
 // import { useContext } from "react";
