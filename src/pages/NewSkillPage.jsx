@@ -70,6 +70,7 @@ const NewSkillPage = () => {
   };
 
   const handleUpdate = async (skillId, updatedSkill, updatedCity) => {
+    console.log("Updating skill with ID:", skillId); // Debugging
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/skills/${skillId}`,
@@ -90,6 +91,8 @@ const NewSkillPage = () => {
               : skill
           )
         );
+      } else {
+        console.error("Failed to update skill:", await response.json());
       }
     } catch (error) {
       console.error("Error updating skill:", error);
