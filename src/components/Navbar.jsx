@@ -1,36 +1,22 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { SessionContext } from "../contexts/SessionContext";
-import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const { isAuthenticated, logout } = useContext(SessionContext);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-blue-600 text-white p-4 shadow-md">
-      <div className="container mx-auto flex justify-between items-center">
+    <nav className="bg-gray-900 text-white py-4 shadow-md">
+      <div className="container mx-auto flex justify-between items-center px-6">
         {/* Logo */}
-        <Link to="/" className="text-xl font-semibold">
+        <Link to="/" className="text-2xl font-semibold tracking-wide">
           Skill Finder
         </Link>
 
-        {/* Mobile Menu Toggle */}
-        <button
-          className="lg:hidden p-2"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-
         {/* Navigation Links */}
-        <ul
-          className={`lg:flex space-x-6 items-center ${
-            menuOpen ? "block mt-4 lg:mt-0" : "hidden lg:flex"
-          }`}
-        >
+        <ul className="flex space-x-6">
           <li>
-            <Link to="/skills" className="hover:text-gray-200 transition">
+            <Link to="/skills" className="hover:text-gray-400 transition">
               All Skills
             </Link>
           </li>
@@ -39,13 +25,13 @@ const Navbar = () => {
               <li>
                 <Link
                   to="/skills/new"
-                  className="hover:text-gray-200 transition"
+                  className="hover:text-gray-400 transition"
                 >
                   Add a Skill
                 </Link>
               </li>
               <li>
-                <Link to="/profile" className="hover:text-gray-200 transition">
+                <Link to="/profile" className="hover:text-gray-400 transition">
                   Profile
                 </Link>
               </li>
@@ -61,12 +47,12 @@ const Navbar = () => {
           ) : (
             <>
               <li>
-                <Link to="/signup" className="hover:text-gray-200 transition">
+                <Link to="/signup" className="hover:text-gray-400 transition">
                   Signup
                 </Link>
               </li>
               <li>
-                <Link to="/login" className="hover:text-gray-200 transition">
+                <Link to="/login" className="hover:text-gray-400 transition">
                   Login
                 </Link>
               </li>
