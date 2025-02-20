@@ -1,8 +1,9 @@
-# React + Vite
+##About
+Skill Finder is a web app that connects people who need help with those who provide specific skill. Users can register, list their skills along with the city they are available in, and search for others who provide a skill.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+##Core Functionality
+User Authentication: Users can sign up and log in.
+Skill Management: Users can add, update, and delete their skills.
+City Management: Cities are stored in the database to associate skills with specific locations.
+Skill Search: Users can search for skills in a specific city or by a specific person.
+Data Validation: Prevents duplicate skills for the same user in the same city.
